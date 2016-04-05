@@ -1,0 +1,49 @@
+FUNCTION_BLOCK FuzzyFight
+
+	VAR_INPUT
+		strength : REAL;
+		baddie : REAL;
+	END_VAR
+	
+	VAR_OUTPUT
+		damage : REAL;
+	END_VAR
+	
+	FUZZIFY strength
+		TERM peeweeherman := (0, 1) (2, 1) (4, 0);
+		TERM stevenseagal := (5, 0) (7, 1) (9, 1);
+		TERM jcvd := (10, 0) (13, 1) (15, 1);
+		TERM arnoldschwarzenegger := (16, 0) (19, 1) (21, 1);
+	END_FUZZIFY
+	
+	FUZZIFY baddie
+		TERM pushover := (0, 1) (2, 1) (3, 0);
+		TERM difficult := trian 4 5 6;
+		TERM gruesome := (7, 0) (11, 1) (13, 1);
+		TERM vile := (14, 0) (17, 1) (19, 1);
+	END_FUZZIFY
+	
+	DEFUZZIFY damage
+		TERM low := (0, 1) (2, 1) (4, 0);
+		TERM medium := trian 10 15 25;
+		TERM high := (30, 0) (45, 0) (60, 1);
+		METHOD : COG;
+		DEFAULT := 0;
+	END_DEFUZZIFY
+	
+	RULEBLOCK No1
+		AND : MIN;
+		ACT : MIN;
+		ACCU : MAX;
+		RULE 1 : IF baddie IS pushover AND strength IS peeweeherman THEN damage IS low;
+		RULE 2 : IF baddie IS difficult AND strength IS stevenseagal THEN damage IS low;
+		RULE 3 : IF baddie IS gruesome AND strength IS jcvd THEN damage IS low;
+		RULE 4 : IF baddie IS vile AND strength IS arnoldschwarzenegger THEN damage IS low;
+		RULE 5 : IF strength IS arnoldschwarzenegger AND baddie IS NOT vile THEN damage IS low;
+		RULE 6 : IF strength IS peeweeherman AND baddie IS NOT pushover THEN damage IS high;
+		RULE 7 : IF strength IS stevenseagal AND baddie IS NOT vile AND baddie IS NOT pushover THEN damage IS medium;
+		RULE 8 : IF strength IS jcvd AND baddie IS NOT vile THEN damage IS medium;	
+		
+	END_RULEBLOCK
+	
+END_FUNCTION_BLOCK
